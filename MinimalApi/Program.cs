@@ -1,9 +1,12 @@
-using System.Reflection.Metadata.Ecma335;
+using MinimalApi.Endpoints;
+using TodoLibrary.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<ITodoData, TodoData>();
 
 var app = builder.Build();
 
@@ -15,7 +18,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/Todo", () => new string[] { "string1", "string2" });
-app.MapGet("/api/Todo/{id}", (int id) => $"Id: {id}");
+app.AddTodoEndpoints();
 
 app.Run();
