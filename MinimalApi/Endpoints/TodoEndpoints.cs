@@ -8,22 +8,29 @@ public static class TodoEndpoints
     // Extension method (this WebAppliction app)
     public static void AddTodoEndpoints(this WebApplication app)
     {
-        app.MapGet("/api/Todos", async (ITodoData data) =>
-        {
-            var output = await data.GetAllAssigned(1);
-            return Results.Ok(output);
-        });
+        app.MapGet("/api/Todos", GetAllTodos);
 
-        app.MapPost("/api/Todos", async (ITodoData data, [FromBody] string task) =>
-        {
-            var output = await data.Create(1, task);
-            return Results.Ok(output);
-        });
+        app.MapPost("/api/Todos", CreateTodo);
 
-        app.MapDelete("/api/Todos/{id}", async (ITodoData data, int id) =>
-        {
-            await data.DeleteTodo(1, id);
-            return Results.Ok();
-        });
+        app.MapDelete("/api/Todos/{id}", DeleteTodo);
     }
+
+    private async static Task<IResult> GetAllTodos(ITodoData data)
+    {
+        var output = await data.GetAllAssigned(1);
+        return Results.Ok(output);
+    }
+
+    private async static Task<IResult> CreateTodo(ITodoData data, [FromBody] string task)
+    {
+        var output = await data.Create(1, task);
+        return Results.Ok(output);
+    }
+
+    private async static Task<IResult> DeleteTodo(ITodoData data, int id)
+    {
+        await data.DeleteTodo(1, id);
+        return Results.Ok();
+    }
+
 }
